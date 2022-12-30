@@ -17,6 +17,10 @@
 
       const socket = io();
 
+      function isPageHidden(){
+        return document.hidden || document.msHidden || document.webkitHidden || document.mozHidden;
+      }
+
       const button = document.querySelector("#button")
 
       button.addEventListener("click", (event) => {
@@ -24,6 +28,10 @@
       })
 
       socket.on('pong', (time) => {
+        if (isPageHidden()) {
+          document.title = "3s passed"
+        }
+
         const element = `
           <turbo-stream action="set_title" title="new title ${time}"></turbo-stream>
         `
