@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Websocket async execution when tab is not active</title>
+  </head>
+
+  <body>
+    <button type="button" id="button">Change title in 3s</button>
+
+    <script type="module">
+      import { Turbo } from "https://cdn.jsdelivr.net/npm/@hotwired/turbo-rails/+esm"
+      import * as TurboPower from "https://cdn.jsdelivr.net/npm/turbo_power/+esm"
+
+      TurboPower.initialize(Turbo.StreamActions)
+
+      import { io } from "https://cdn.jsdelivr.net/npm/socket.io-client/+esm"
+
+      const socket = io();
+
+      const button = document.querySelector("#button")
+
+      button.addEventListener("click", (event) => {
+        socket.emit("ping")
+      })
+
+      socket.on('pong', (time) => {
+        const element = `
+          <turbo-stream action="set_title" title="new title ${time}"></turbo-stream>
+        `
+        document.body.insertAdjacentHTML('beforeend', element)
+        console.log(element)
+      })
+    </script>
+  </body>
+</html>
